@@ -81,8 +81,8 @@ class Mob(pygame.sprite.Sprite):
 
         #self.rect.x = random.randrange(WIDTH - self.rect.width)
         # #self.rect.y = random.randrange(HEIGHT - self.rect.height)
-        self.x = random.randrange(WIDTH - self.rect.width)
-        self.y = random.randrange(HEIGHT - self.rect.height)
+        self.x = random.randrange(WIDTH - player.rect.width)
+        self.y = random.randrange(HEIGHT - player.rect.height)
         self.rect.center = (self.x, self.y)
 
         self.speedx = random.randrange(3, SPEED - 1)
@@ -126,7 +126,7 @@ class Bullet(pygame.sprite.Sprite):
 
         self.rect.bottom = bottom
         self.rect.centerx = centerx
-        self.speedy = -5
+        self.speedy = -10 
 
     def update(self):
 
@@ -176,7 +176,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.shoot()
-
+    
     #update
     all_sprites.update()
 
