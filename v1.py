@@ -118,7 +118,7 @@ class Mob(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, centerx, bottom):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((10,10))
+        self.image = pygame.Surface((30,10))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
 
