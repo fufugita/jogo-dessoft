@@ -85,8 +85,8 @@ class Mob(pygame.sprite.Sprite):
         self.y = random.randrange(HEIGHT - player.rect.height)
         self.rect.center = (self.x, self.y)
 
-        self.speedx = random.randrange(3, SPEED - 1)
-        self.speedy = random.randrange(3, SPEED - 1)
+        self.speedx = random.randrange(3, SPEED)
+        self.speedy = random.randrange(3, SPEED)
         
     def update(self):
         global player
