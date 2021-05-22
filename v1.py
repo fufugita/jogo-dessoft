@@ -79,8 +79,6 @@ class Mob(pygame.sprite.Sprite):
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
-        #self.rect.x = random.randrange(WIDTH - self.rect.width)
-        # #self.rect.y = random.randrange(HEIGHT - self.rect.height)
         self.x = random.randrange(WIDTH - player.rect.width)
         self.y = random.randrange(HEIGHT - player.rect.height)
         self.rect.center = (self.x, self.y)
