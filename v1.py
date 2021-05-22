@@ -26,7 +26,9 @@ class Player(pygame.sprite.Sprite):
         self.image.fill(GREEN)
 
         self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH / 2, HEIGHT / 2)
+        self.x = WIDTH / 2
+        self.y = WIDTH / 2
+        self.rect.center = (self.x, self.y)
 
         self.speedx = 0
         self.speedy = 0
@@ -59,9 +61,13 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
 
-
         self.rect.x += self.speedx
         self.rect.y += self.speedy
+    
+    def shoot(self):
+        bullet = Bullet(self.rect.centerx, self.rect.bottom)
+        all_sprites.add(bullet)
+        bullets.add(bullet)
       
     
 class Mob(pygame.sprite.Sprite):
@@ -71,20 +77,37 @@ class Mob(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.Surface((25, 25))
         self.image.fill(RED)
-
         self.rect = self.image.get_rect()
-        self.rect.x = random.randrange(WIDTH - self.rect.width)
-        self.rect.y = random.randrange(HEIGHT - self.rect.height)
 
-        self.speedx2 = random.randrange(1, SPEED - 1)
-        self.speedy2 = random.randrange(1, SPEED - 1)
+        #self.rect.x = random.randrange(WIDTH - self.rect.width)
+        # #self.rect.y = random.randrange(HEIGHT - self.rect.height)
+        self.x = random.randrange(WIDTH - self.rect.width)
+        self.y = random.randrange(HEIGHT - self.rect.height)
+        self.rect.center = (self.x, self.y)
 
-
+        self.speedx = random.randrange(3, SPEED - 1)
+        self.speedy = random.randrange(3, SPEED - 1)
+        
     def update(self):
+        global player
+        if self.x < player.rect.centerx:
+            self.x += 1
+            self.rect.center = (self.x, self.y)
+            
+        elif self.x > player.rect.centerx:
+            self.x -= 1
+            self.rect.center = (self.x, self.y)
+            
+        if self.y < player.rect.centery:
+            self.y += 1
+            self.rect.center = (self.x, self.y)
+            
+        elif self.y > player.rect.centery:
+            self.y -= 1
+            self.rect.center = (self.x, self.y)  
+        
 
-        self.rect.x += self.speedx2
-        self.rect.y += self.speedy2   
-
+        #limitar na tela
         if self.rect.right > WIDTH:
             self.rect.right = WIDTH
         if self.rect.left < 0:
@@ -92,9 +115,30 @@ class Mob(pygame.sprite.Sprite):
         if self.rect.top < 0:
             self.rect.top = 0
         if self.rect.bottom > HEIGHT:
-            self.rect.bottom = HEIGHT   
+            self.rect.bottom = HEIGHT
 
-    
+class Bullet(pygame.sprite.Sprite):
+    def __init__(self, centerx, bottom):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.Surface((10,10))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+
+        self.rect.bottom = bottom
+        self.rect.centerx = centerx
+        self.speedy = -5
+
+    def update(self):
+
+        self.rect.y += self.speedy
+
+        #sumir bala
+
+        if self.rect.bottom < 0:
+            self.kill()
+
+
+
 
 #criar janela
 pygame.init()   
@@ -105,11 +149,12 @@ clock = pygame.time.Clock()
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
+bullets = pygame.sprite.Group()
 player = Player()
 all_sprites.add(player)
 
 
-for i in range(8):
+for i in range(10):
     m = Mob()
     all_sprites.add(m)
     mobs.add(m)
@@ -128,8 +173,24 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                player.shoot()
+
     #update
     all_sprites.update()
+
+    #checar bala com mob
+    hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+    for hit in hits:
+        m = Mob()
+        all_sprites.add(m)
+        mobs.add(m)
+
+    #checar mob colidir com player
+    hits = pygame.sprite.spritecollide(player, mobs, False)
+    if hits:
+        running = False
 
     #draw/render
     screen.fill(BLACK)
