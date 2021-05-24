@@ -1,6 +1,8 @@
 import pygame
 import random
 import math
+from os import path
+
 
 #parametros
 WIDTH = 1500
@@ -16,16 +18,21 @@ GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
 
+img_dir = path.join(path.dirname(__file__), '')
+
+
 class Player(pygame.sprite.Sprite):
     #sprite player
-    def __init__(self):
+    def __init__(self, player_img):
 
         #player
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((25, 25))
-        self.image.fill(GREEN)
 
+        self.image = player_img
+        self.orig_image = player_img
+        self.image.fill(GREEN)
         self.rect = self.image.get_rect()
+
         self.x = WIDTH / 2
         self.y = WIDTH / 2
         self.rect.center = (self.x, self.y)
@@ -34,6 +41,36 @@ class Player(pygame.sprite.Sprite):
         self.speedy = 0
 
     def update(self):
+
+        #olha para o mouse
+        mouse = pygame.mouse.get_pos()
+        mouse_x = mouse[0]
+        mouse_y = mouse[1]
+
+        # Guarda a posição do jogador em variáveis para facilitar
+        cx = self.rect.centerx
+        cy = self.rect.centery
+
+        # Calcula o vetor do centro do personagem até o mouse
+        direcao_x = mouse_x - cx
+        direcao_y = mouse_y - cy
+
+        # Calcula o ângulo entre o eixo horizontal e o vetor da direção
+        angulo_radianos = math.atan2(direcao_y, direcao_x)
+        angulo_graus = math.degrees(angulo_radianos)
+
+        # Rotaciona a imagem
+        # Como a imagem da nave está inicialmente apontando para cima, devemos
+        # somar 90 graus, pois angulo_graus é contado a partir do eixo x positivo.
+        # Nesse caso, o eixo x positivo seria a nave apontando para a direita.
+        # Além disso, o eixo y aponta para baixo, mas a função math.atan2 assume
+        # que o y aponta para cima, por isso devemos inverter a direção do ângulo
+
+        angulo_rotacao = -(angulo_graus + 90)
+        self.image = pygame.transform.rotate(self.orig_image, angulo_rotacao)
+        self.rect = self.image.get_rect()
+        self.rect.centerx = cx
+        self.rect.centery = cy
 
         self.speedx = 0
         self.speedy = 0
@@ -87,7 +124,7 @@ class Mob(pygame.sprite.Sprite):
         self.speedy = random.randrange(3, SPEED)
         
     def update(self):
-        global player
+        
         if self.x < player.rect.centerx:
             self.x += 1
             self.rect.center = (self.x, self.y)
@@ -103,6 +140,12 @@ class Mob(pygame.sprite.Sprite):
         elif self.y > player.rect.centery:
             self.y -= 1
             self.rect.center = (self.x, self.y)  
+
+        if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
+            print('colidiu')
+            self.x -= 1
+
+            
         
 
         #limitar na tela
@@ -145,10 +188,13 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('ARENA GAME TESTE')
 clock = pygame.time.Clock()
 
+player_img = pygame.image.load(path.join(img_dir, 'hyewonas.jpg')).convert_alpha()
+player_img = pygame.transform.scale(player_img, (25, 25))
+
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 bullets = pygame.sprite.Group()
-player = Player()
+player = Player(player_img)
 all_sprites.add(player)
 
 
