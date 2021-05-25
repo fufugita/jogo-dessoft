@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = player_img
         self.orig_image = player_img
-        self.image.fill(GREEN)
+        #self.image.fill(GREEN)
         self.rect = self.image.get_rect()
 
         self.x = WIDTH / 2
@@ -102,7 +102,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.speedy
     
     def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.bottom)
+        bullet = Bullet(self.rect.centerx, self.rect.centery)
         all_sprites.add(bullet)
         bullets.add(bullet)
       
@@ -120,8 +120,8 @@ class Mob(pygame.sprite.Sprite):
         self.y = random.randrange(HEIGHT - player.rect.height)
         self.rect.center = (self.x, self.y)
 
-        self.speedx = random.randrange(3, SPEED)
-        self.speedy = random.randrange(3, SPEED)
+        self.speedx = SPEED
+        self.speedy = SPEED
         
     def update(self):
         
@@ -143,9 +143,6 @@ class Mob(pygame.sprite.Sprite):
 
         if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
             print('colidiu')
-            self.x -= 1
-
-            
         
 
         #limitar na tela
@@ -161,22 +158,56 @@ class Mob(pygame.sprite.Sprite):
 class Bullet(pygame.sprite.Sprite):
     def __init__(self, centerx, bottom):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((30,10))
+        self.image = pygame.Surface((20,20))
         self.image.fill(BLUE)
         self.rect = self.image.get_rect()
 
         self.rect.bottom = bottom
         self.rect.centerx = centerx
-        self.speedy = -10 
+        self.speed = 10
+
+        mouse = pygame.mouse.get_pos()
+        mouse_x = mouse[0]
+        mouse_y = mouse[1]
+        angulo_radianos = math.atan2(mouse_y - self.rect.bottom, mouse_x - self.rect.centerx)
+        
+        self.speedx = math.cos(angulo_radianos)
+        self.speedy = math.sin(angulo_radianos) 
+       
+        '''self.rect.x += self.speed * self.speedx
+        self.rect.y += self.speed * self.speedy'''
+         
 
     def update(self):
 
-        self.rect.y += self.speedy
+        '''mouse = pygame.mouse.get_pos()
+        mouse_x = mouse[0]
+        mouse_y = mouse[1]
+        cx = self.rect.centerx
+        cy = self.rect.centery
+        direcao_x = mouse_x - cx
+        direcao_y = mouse_y - cy
+        angulo_radianos = math.atan2(mouse_y, mouse_x)
+        angulo_graus = math.degrees(angulo_radianos)
+        
+        self.speedx = math.cos(angulo_graus)
+        self.speedy = math.sin(angulo_graus)'''
+
+        self.rect.centerx += self.speed * self.speedx
+        self.rect.bottom += self.speed * self.speedy
 
         #sumir bala
 
         if self.rect.bottom < 0:
             self.kill()
+        if self.rect.top > HEIGHT:
+            self.kill()
+        if self.rect.right > WIDTH:
+            self.kill()
+        if self.rect.left < 0:
+            self.kill ()
+
+        
 
 
 
@@ -218,8 +249,14 @@ while running:
             running = False
 
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player.shoot()
+            if event.key == pygame.K_ESCAPE:
+                running = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            mouse = pygame.mouse.get_pos()
+            print(mouse)
+            player.shoot()
+                
     
     #update
     all_sprites.update()
@@ -236,6 +273,7 @@ while running:
     if hits:
         running = False
 
+        
     #draw/render
     screen.fill(BLACK)
     all_sprites.draw(screen)
