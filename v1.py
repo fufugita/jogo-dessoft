@@ -5,7 +5,7 @@ from os import path
 
 
 #parametros
-WIDTH = 1500
+WIDTH = 1800
 HEIGHT = 1000
 FPS = 60
 SPEED = 7
@@ -212,10 +212,10 @@ clock = pygame.time.Clock()
 
 
 fireball_img = pygame.image.load(path.join(img_dir, 'fireball.png')).convert_alpha()
-fireball_img = pygame.transform.scale(fireball_img, (20, 20))
+fireball_img = pygame.transform.scale(fireball_img, (25, 25))
 
-player_img = pygame.image.load(path.join(img_dir, 'hyewonas.jpg')).convert_alpha()
-player_img = pygame.transform.scale(player_img, (25, 25))
+player_img = pygame.image.load(path.join(img_dir, 'hyewonas.png')).convert_alpha()
+player_img = pygame.transform.scale(player_img, (40, 40))
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
