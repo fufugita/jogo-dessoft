@@ -37,6 +37,9 @@ class Player(pygame.sprite.Sprite):
         self.y = WIDTH / 2
         self.rect.center = (self.x, self.y)
 
+        self.last_shot = pygame.time.get_ticks()
+        self.shoot_ticks = 300
+
         self.speedx = 0
         self.speedy = 0
 
@@ -102,9 +105,15 @@ class Player(pygame.sprite.Sprite):
         self.rect.y += self.speedy
     
     def shoot(self):
-        bullet = Bullet(self.rect.centerx, self.rect.centery)
-        all_sprites.add(bullet)
-        bullets.add(bullet)
+
+        now = pygame.time.get_ticks()
+        elapsed_ticks = now - self.last_shot
+
+        if elapsed_ticks > self.shoot_ticks:
+            self.last_shot = now
+            bullet = Bullet(self.rect.centerx, self.rect.centery, fireball_img)
+            all_sprites.add(bullet)
+            bullets.add(bullet)
       
     
 class Mob(pygame.sprite.Sprite):
@@ -112,12 +121,12 @@ class Mob(pygame.sprite.Sprite):
 
         #sprite inimigo
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((25, 25))
+        self.image = pygame.Surface((30, 30))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
 
-        self.x = random.randrange(WIDTH - player.rect.width)
-        self.y = random.randrange(HEIGHT - player.rect.height)
+        self.x = random.randrange(WIDTH - (player.rect.width * 2) + 100)
+        self.y = random.randrange(HEIGHT - (player.rect.height * 2) + 100)
         self.rect.center = (self.x, self.y)
 
         self.speedx = SPEED
@@ -145,27 +154,23 @@ class Mob(pygame.sprite.Sprite):
             print('colidiu')
         
 
-        #limitar na tela
-        if self.rect.right > WIDTH:
-            self.rect.right = WIDTH
-        if self.rect.left < 0:
-            self.rect.left = 0
-        if self.rect.top < 0:
-            self.rect.top = 0
-        if self.rect.bottom > HEIGHT:
-            self.rect.bottom = HEIGHT
-
 class Bullet(pygame.sprite.Sprite):
-    def __init__(self, centerx, bottom):
+
+    def __init__(self, centerx, bottom, fireball_img):
+
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((20,20))
-        self.image.fill(BLUE)
+        self.image = fireball_img
+        self.orig_image = fireball_img
+        
+        #self.image = pygame.Surface((20,20))
+        #self.image.fill(BLUE)
+
         self.rect = self.image.get_rect()
 
         self.rect.bottom = bottom
         self.rect.centerx = centerx
-        self.speed = 10
-
+        self.speed = 9
+        
         mouse = pygame.mouse.get_pos()
         mouse_x = mouse[0]
         mouse_y = mouse[1]
@@ -174,27 +179,14 @@ class Bullet(pygame.sprite.Sprite):
         self.speedx = math.cos(angulo_radianos)
         self.speedy = math.sin(angulo_radianos) 
        
-        '''self.rect.x += self.speed * self.speedx
-        self.rect.y += self.speed * self.speedy'''
+
          
 
     def update(self):
 
-        '''mouse = pygame.mouse.get_pos()
-        mouse_x = mouse[0]
-        mouse_y = mouse[1]
-        cx = self.rect.centerx
-        cy = self.rect.centery
-        direcao_x = mouse_x - cx
-        direcao_y = mouse_y - cy
-        angulo_radianos = math.atan2(mouse_y, mouse_x)
-        angulo_graus = math.degrees(angulo_radianos)
-        
-        self.speedx = math.cos(angulo_graus)
-        self.speedy = math.sin(angulo_graus)'''
-
+        #vel bala x y
         self.rect.centerx += self.speed * self.speedx
-        self.rect.bottom += self.speed * self.speedy
+        self.rect.bottom += self.speed * self.speedy 
 
         #sumir bala
 
@@ -207,7 +199,6 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.kill ()
 
-        
 
 
 
@@ -219,20 +210,26 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption('ARENA GAME TESTE')
 clock = pygame.time.Clock()
 
+
+fireball_img = pygame.image.load(path.join(img_dir, 'fireball.png')).convert_alpha()
+fireball_img = pygame.transform.scale(fireball_img, (20, 20))
+
 player_img = pygame.image.load(path.join(img_dir, 'hyewonas.jpg')).convert_alpha()
 player_img = pygame.transform.scale(player_img, (25, 25))
 
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
+bullet = Bullet(0, 0, fireball_img)
 bullets = pygame.sprite.Group()
 player = Player(player_img)
 all_sprites.add(player)
 
 
-for i in range(10):
+for i in range(20):
     m = Mob()
     all_sprites.add(m)
     mobs.add(m)
+            
 
 #loop do jogo
 running = True
@@ -251,7 +248,7 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
-
+        #tiros  
         if event.type == pygame.MOUSEBUTTONDOWN:
             mouse = pygame.mouse.get_pos()
             print(mouse)
@@ -273,7 +270,7 @@ while running:
     if hits:
         running = False
 
-        
+
     #draw/render
     screen.fill(BLACK)
     all_sprites.draw(screen)
