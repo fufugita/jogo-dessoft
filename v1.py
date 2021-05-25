@@ -130,8 +130,8 @@ class Mob(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.x = random.randrange(WIDTH - (player.rect.width * 2) + 100)
-        self.y = random.randrange(HEIGHT - (player.rect.height * 2) + 100)
+        self.x = random.randrange(WIDTH - (player.rect.width * 2) + 300)
+        self.y = random.randrange(HEIGHT - (player.rect.height * 2) + 300)
         self.rect.center = (self.x, self.y)
 
         self.speedx = SPEED
@@ -153,7 +153,12 @@ class Mob(pygame.sprite.Sprite):
             
         elif self.y > player.rect.centery:
             self.y -= 1
-            self.rect.center = (self.x, self.y)  
+            self.rect.center = (self.x, self.y) 
+
+        '''if self.x == player.x:
+            self.kill()
+        elif self.y == player.y:
+            self.kill()'''
 
         if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
             print('colidiu')
@@ -233,7 +238,7 @@ player = Player(player_img)
 all_sprites.add(player)
 
 
-for i in range(20):
+for i in range(30):
     m = Mob(enemy_img)
     all_sprites.add(m)
     mobs.add(m)
