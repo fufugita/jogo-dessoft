@@ -117,12 +117,17 @@ class Player(pygame.sprite.Sprite):
       
     
 class Mob(pygame.sprite.Sprite):
-    def __init__(self):
+    def __init__(self, enemy_img):
 
         #sprite inimigo
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.Surface((30, 30))
-        self.image.fill(RED)
+
+        self.image = enemy_img
+        self.orig_image = enemy_img
+
+        #self.image = pygame.Surface((30, 30))
+        #self.image.fill(RED)
+
         self.rect = self.image.get_rect()
 
         self.x = random.randrange(WIDTH - (player.rect.width * 2) + 100)
@@ -217,6 +222,9 @@ fireball_img = pygame.transform.scale(fireball_img, (25, 25))
 player_img = pygame.image.load(path.join(img_dir, 'hyewonas.png')).convert_alpha()
 player_img = pygame.transform.scale(player_img, (40, 40))
 
+enemy_img = pygame.image.load(path.join(img_dir, 'gowon.png')).convert_alpha()
+enemy_img = pygame.transform.scale(enemy_img, (40, 40))
+
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 bullet = Bullet(0, 0, fireball_img)
@@ -226,7 +234,7 @@ all_sprites.add(player)
 
 
 for i in range(20):
-    m = Mob()
+    m = Mob(enemy_img)
     all_sprites.add(m)
     mobs.add(m)
             
@@ -261,7 +269,7 @@ while running:
     #checar bala com mob
     hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
     for hit in hits:
-        m = Mob()
+        m = Mob(enemy_img)
         all_sprites.add(m)
         mobs.add(m)
 
