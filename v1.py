@@ -37,6 +37,9 @@ class Player(pygame.sprite.Sprite):
         self.y = WIDTH / 2
         self.rect.center = (self.x, self.y)
 
+        self.last_pos = pygame.time.get_ticks()
+        self.pos_ticks = 3000
+
         self.last_shot = pygame.time.get_ticks()
         self.shoot_ticks = 300
 
@@ -75,6 +78,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.centerx = cx
         self.rect.centery = cy
 
+        self.speed = SPEED
         self.speedx = 0
         self.speedy = 0
 
@@ -103,7 +107,27 @@ class Player(pygame.sprite.Sprite):
 
         self.rect.x += self.speedx
         self.rect.y += self.speedy
-    
+
+    def dash(self):
+        #dash
+            mouse = pygame.mouse.get_pos()
+            mouse_x = mouse[0]
+            mouse_y = mouse[1]
+
+            angulo_radianos = math.atan2(mouse_y - self.rect.bottom, mouse_x - self.rect.centerx)
+
+            self.speedx = math.cos(angulo_radianos)
+            self.speedy = math.sin(angulo_radianos)
+
+
+            now = pygame.time.get_ticks()             
+            elapsed_ticks = now - self.last_pos
+
+            if elapsed_ticks > self.pos_ticks:
+                self.last_pos = now
+                self.rect.centerx += self.speed * self.speedx * 30
+                self.rect.bottom += self.speed * self.speedy * 30
+
     def shoot(self):
 
         now = pygame.time.get_ticks()
@@ -188,7 +212,7 @@ class Bullet(pygame.sprite.Sprite):
         
         self.speedx = math.cos(angulo_radianos)
         self.speedy = math.sin(angulo_radianos) 
-       
+        
 
          
 
@@ -238,7 +262,7 @@ player = Player(player_img)
 all_sprites.add(player)
 
 
-for i in range(30):
+for i in range(15):
     m = Mob(enemy_img)
     all_sprites.add(m)
     mobs.add(m)
@@ -261,10 +285,10 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 running = False
+            if event.key == pygame.K_SPACE:
+                player.dash()
         #tiros  
         if event.type == pygame.MOUSEBUTTONDOWN:
-            mouse = pygame.mouse.get_pos()
-            print(mouse)
             player.shoot()
                 
     
