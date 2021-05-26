@@ -30,7 +30,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = player_img
         self.orig_image = player_img
-        #self.image.fill(GREEN)
+        #aself.image.fill(GREEN)
         self.rect = self.image.get_rect()
 
         self.x = WIDTH / 2
@@ -154,8 +154,8 @@ class Mob(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.x = random.randrange(WIDTH - (player.rect.width * 2) + 300)
-        self.y = random.randrange(HEIGHT - (player.rect.height * 2) + 300)
+        self.x = random.randrange(WIDTH)
+        self.y = random.randrange(HEIGHT)
         self.rect.center = (self.x, self.y)
 
         self.speedx = SPEED
@@ -190,7 +190,7 @@ class Mob(pygame.sprite.Sprite):
 
 class Bullet(pygame.sprite.Sprite):
 
-    def __init__(self, centerx, bottom, fireball_img):
+    def __init__(self, centerx, centery, fireball_img):
 
         pygame.sprite.Sprite.__init__(self)
         self.image = fireball_img
@@ -201,14 +201,14 @@ class Bullet(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
 
-        self.rect.bottom = bottom
+        self.rect.centery = centery
         self.rect.centerx = centerx
         self.speed = 9
         
         mouse = pygame.mouse.get_pos()
         mouse_x = mouse[0]
         mouse_y = mouse[1]
-        angulo_radianos = math.atan2(mouse_y - self.rect.bottom, mouse_x - self.rect.centerx)
+        angulo_radianos = math.atan2(mouse_y - self.rect.centery, mouse_x - self.rect.centerx)
         
         self.speedx = math.cos(angulo_radianos)
         self.speedy = math.sin(angulo_radianos) 
@@ -220,7 +220,7 @@ class Bullet(pygame.sprite.Sprite):
 
         #vel bala x y
         self.rect.centerx += self.speed * self.speedx
-        self.rect.bottom += self.speed * self.speedy 
+        self.rect.centery += self.speed * self.speedy 
 
         #sumir bala
 
@@ -264,8 +264,11 @@ all_sprites.add(player)
 
 for i in range(15):
     m = Mob(enemy_img)
+    while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 200:
+        m = Mob(enemy_img)
     all_sprites.add(m)
     mobs.add(m)
+    
             
 
 #loop do jogo
