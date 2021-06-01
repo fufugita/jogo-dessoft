@@ -81,8 +81,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = SPEED
         self.speedx = 0
         self.speedy = 0
-
-
+    
         #movimento
         keystate = pygame.key.get_pressed()
 
