@@ -38,7 +38,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.center = (self.x, self.y)
 
         self.last_pos = pygame.time.get_ticks()
-        self.pos_ticks = 3000
+        self.pos_ticks = 2000
 
         self.last_shot = pygame.time.get_ticks()
         self.shoot_ticks = 300
@@ -127,7 +127,6 @@ class Player(pygame.sprite.Sprite):
                 self.last_pos = now
                 self.rect.centerx += self.speed * self.speedx * 30
                 self.rect.bottom += self.speed * self.speedy * 30
-
     def shoot(self):
 
         now = pygame.time.get_ticks()
@@ -158,8 +157,8 @@ class Mob(pygame.sprite.Sprite):
         self.y = random.randrange(HEIGHT)
         self.rect.center = (self.x, self.y)
 
-        self.speedx = SPEED
-        self.speedy = SPEED
+        self.speedx = SPEED**2
+        self.speedy = SPEED**2
         
     def update(self):
         
@@ -184,8 +183,8 @@ class Mob(pygame.sprite.Sprite):
         elif self.y == player.y:
             self.kill()'''
 
-        if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
-            print('colidiu')
+        #if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
+            #print('colidiu')
         
 
 class Bullet(pygame.sprite.Sprite):
@@ -223,7 +222,6 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centery += self.speed * self.speedy 
 
         #sumir bala
-
         if self.rect.bottom < 0:
             self.kill()
         if self.rect.top > HEIGHT:
@@ -264,7 +262,7 @@ all_sprites.add(player)
 
 for i in range(15):
     m = Mob(enemy_img)
-    while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 200:
+    while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
         m = Mob(enemy_img)
     all_sprites.add(m)
     mobs.add(m)
