@@ -15,6 +15,7 @@ O jogo é infinito e pode ser jogado quantas vezes quiser após a morte basta ap
 
 
 Fontes para conteúdos utilizados:
+
    Player: https://pixivan.itch.io/mercenary-warrior-character
     
    Mobs: https://opengameart.org/content/bosses-and-monsters-spritesheets-ars-notoria ou https://opengameart.org/content/10-basic-rpg-enemies
