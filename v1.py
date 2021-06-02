@@ -24,13 +24,16 @@ pygame.display.set_caption('ARENA GAME TESTE')
 img_dir = path.join(path.dirname(__file__), 'assets', 'img')
 snd_dir = path.join(path.dirname(__file__), 'assets', 'snd')
 
-fireball_img = pygame.image.load(path.join(img_dir, 'fireball.png')).convert_alpha()
-fireball_img = pygame.transform.scale(fireball_img, (25, 25))
+fire_img = pygame.image.load(path.join(img_dir, 'fire.png')).convert_alpha()
+fire_img = pygame.transform.scale(fire_img, (25, 25))
 
-player_img = pygame.image.load(path.join(img_dir, 'hyewonas.png')).convert_alpha()
+fire2_img = pygame.image.load(path.join(img_dir, 'fire2.png')).convert_alpha()
+fire2_img = pygame.transform.scale(fire2_img, (25, 25))
+
+player_img = pygame.image.load(path.join(img_dir, 'player.png')).convert_alpha()
 player_img = pygame.transform.scale(player_img, (40, 40))
 
-enemy_img = pygame.image.load(path.join(img_dir, 'gowon.png')).convert_alpha()
+enemy_img = pygame.image.load(path.join(img_dir, 'mob.png')).convert_alpha()
 enemy_img = pygame.transform.scale(enemy_img, (40, 40))
 
 pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
@@ -137,7 +140,7 @@ class Player(pygame.sprite.Sprite):
         elapsed_ticks = now - self.last_shot
         if elapsed_ticks > self.shoot_ticks:
             self.last_shot = now
-            bullet = Bullet(self.rect.centerx, self.rect.centery, fireball_img)
+            bullet = Bullet(self.rect.centerx, self.rect.centery, fire_img)
             all_sprites.add(bullet)
             bullets.add(bullet)
       
@@ -157,6 +160,10 @@ class Mob(pygame.sprite.Sprite):
         self.x = random.randrange(WIDTH)
         self.y = random.randrange(HEIGHT)
         self.rect.center = (self.x, self.y)
+
+        #----- SET PARA COOLDOWN ATIRAR
+        self.last_shot = pygame.time.get_ticks()
+        self.shoot_ticks = 300
 
         #----- VELOCIDADE
         self.speedx = SPEED
@@ -179,19 +186,45 @@ class Mob(pygame.sprite.Sprite):
             self.y -= self.speedy/3
             self.rect.center = (self.x, self.y) 
 
+        #----- OLHA NA DIREÇÃO DO PLAYER
+        p_x = player.rect.centerx
+        p_y = player.rect.centery
+        cx = self.rect.centerx
+        cy = self.rect.centery
+        direcao_x = p_x - cx
+        direcao_y = p_y - cy
+        angulo_radianos = math.atan2(direcao_y, direcao_x)
+        angulo_graus = math.degrees(angulo_radianos)
+        angulo_rotacao = -(angulo_graus + 90)
+        self.image = pygame.transform.rotate(self.orig_image, angulo_rotacao)
+        self.rect = self.image.get_rect()
+        self.rect.centerx = cx
+        self.rect.centery = cy
+
+        atirar = random.randrange(0, 1000)
+        if atirar == 1:
+            self.shoot(angulo_radianos)
+            self.shoot(angulo_radianos + 1)
+
         #if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
             #print('colidiu')
+            
+    def shoot(self, angulo_radianos):
+        #----- ATIRAR 
+        bullet = MobBullet(self.rect.centerx, self.rect.centery, angulo_radianos, fire2_img)
+        all_sprites.add(bullet)
+        mbullets.add(bullet)
         
 
 class Bullet(pygame.sprite.Sprite):
 
     #----- SPRITE TIRO
-    def __init__(self, centerx, centery, fireball_img):
+    def __init__(self, centerx, centery, fire_img):
 
         #----- TIRO
         pygame.sprite.Sprite.__init__(self)
-        self.image = fireball_img
-        self.orig_image = fireball_img
+        self.image = fire_img
+        self.orig_image = fire_img
         self.rect = self.image.get_rect()
         self.rect.centery = centery
         self.rect.centerx = centerx
@@ -223,13 +256,49 @@ class Bullet(pygame.sprite.Sprite):
         if self.rect.left < 0:
             self.kill ()
 
+class MobBullet(pygame.sprite.Sprite):
+    #----- SPRITE TIRO
+    def __init__(self, centerx, centery, angulo, fire_img):
+
+        #----- TIRO
+        pygame.sprite.Sprite.__init__(self)
+        self.image = fire_img
+        self.orig_image = fire_img
+        self.rect = self.image.get_rect()
+        self.rect.centery = centery
+        self.rect.centerx = centerx
+
+        #----- VELOCIDADE DEFAULT
+        self.speed = 15
+        
+        #----- ATIRA 
+        self.speedx = math.cos(angulo)
+        self.speedy = math.sin(angulo) 
+        
+    def update(self):
+
+        #----- VELOCIDADE DA BALA EM DIREÇÃO DO MOUSE
+        self.rect.centerx += self.speed * self.speedx
+        self.rect.centery += self.speed * self.speedy 
+
+        #----- FAZER A BALA DESAPARECER
+        if self.rect.bottom < 0:
+            self.kill()
+        if self.rect.top > HEIGHT:
+            self.kill()
+        if self.rect.right > WIDTH:
+            self.kill()
+        if self.rect.left < 0:
+            self.kill ()
+
+
 #===== CRIANDO MOBS =====
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
 
 #===== CRIANDO TIROS =====
-bullet = Bullet(0, 0, fireball_img)
 bullets = pygame.sprite.Group()
+mbullets = pygame.sprite.Group()
 
 #===== CRIANDO O PLAYER =====
 player = Player(player_img)
@@ -300,11 +369,16 @@ def game_screen(screen):
 
                 #----- CONTA KILLS
                 kills += 1
-    
+
         #----- VERIFICA COLISÃO PLAYER COM MOB
         hits = pygame.sprite.spritecollide(player, mobs, False)
         if hits:
             state = DONE
+
+        hits = pygame.sprite.spritecollide(player, mbullets, False)
+        if hits:
+            state = DONE
+
 
 
         #----- GERA SAÍDAS
