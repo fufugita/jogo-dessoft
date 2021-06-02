@@ -25,6 +25,10 @@ pygame.display.set_caption('ARENA GAME TESTE')
 img_dir = path.join(path.dirname(__file__), 'assets', 'img')
 snd_dir = path.join(path.dirname(__file__), 'assets', 'snd')
 
+background = pygame.image.load(path.join(img_dir, 'background.jpg')).convert_alpha()
+background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+
+
 fire_img = pygame.image.load(path.join(img_dir, 'fire.png')).convert_alpha()
 fire_img = pygame.transform.scale(fire_img, (25, 25))
 
@@ -58,10 +62,6 @@ class Player(pygame.sprite.Sprite):
         self.x = WIDTH / 2
         self.y = WIDTH / 2
         self.rect.center = (self.x, self.y)
-
-        #----- SET PARA COOLDOWN DASH
-        self.last_pos = pygame.time.get_ticks()
-        self.pos_ticks = 2000
 
         #----- SET PARA COOLDOWN ATIRAR
         self.last_shot = pygame.time.get_ticks()
@@ -120,23 +120,6 @@ class Player(pygame.sprite.Sprite):
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
-    def dash(self):
-        #----- DASH
-            mouse = pygame.mouse.get_pos()
-            mouse_x = mouse[0]
-            mouse_y = mouse[1]
-            angulo_radianos = math.atan2(mouse_y - self.rect.bottom, mouse_x - self.rect.centerx)
-            self.speedx = math.cos(angulo_radianos)
-            self.speedy = math.sin(angulo_radianos)
-
-            #----- COOLDOWN DASH
-            now = pygame.time.get_ticks()             
-            elapsed_ticks = now - self.last_pos
-            if elapsed_ticks > self.pos_ticks:
-                self.last_pos = now
-                self.rect.centerx += self.speed * self.speedx 
-                self.rect.bottom += self.speed * self.speedy 
-
     def shoot(self):
         #----- ATIRAR E COOLDOWN
         now = pygame.time.get_ticks()
@@ -146,8 +129,7 @@ class Player(pygame.sprite.Sprite):
             bullet = Bullet(self.rect.centerx, self.rect.centery, fire_img)
             all_sprites.add(bullet)
             bullets.add(bullet)
-      
-    
+            
 class Mob(pygame.sprite.Sprite):
 
     #----- SPRITE MOB
@@ -205,12 +187,10 @@ class Mob(pygame.sprite.Sprite):
         self.rect.centery = cy
 
         atirar = random.randrange(0, 1000)
-        if atirar == 1:
+        if atirar == 730:
             self.shoot(angulo_radianos)
             self.shoot(angulo_radianos + 1)
-
-        #if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
-            #print('colidiu')
+            self.shoot(angulo_radianos - 1)
             
     def shoot(self, angulo_radianos):
         #----- ATIRAR E COOLDOWN
@@ -308,7 +288,7 @@ player = Player(player_img)
 all_sprites.add(player)
 
 #===== SPAWNA MOBS =====
-for i in range(8):
+for i in range(1):
     m = Mob(enemy_img)
     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
         m = Mob(enemy_img)
@@ -347,10 +327,6 @@ def game_screen(screen):
                 #----- APERTOU ESC -> FECHA O JOGO
                 if event.key == pygame.K_ESCAPE:
                     state = DONE
-
-                #APERTOU BARRA DE ESPAÇ0 -> DASH
-                if event.key == pygame.K_SPACE:
-                    player.dash()
 
             #APERTOU O BOTÃO DO MOUSE -> ATIRAR 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -392,6 +368,7 @@ def game_screen(screen):
 
         #----- GERA SAÍDAS
         screen.fill(BLACK)
+        screen.blit(background, (0, 0))
 
         #----- DESENHA SPRITES
         all_sprites.draw(screen)
