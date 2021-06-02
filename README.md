@@ -26,5 +26,5 @@ Fontes para conteúdos utilizados:
     
    Música: https://opengameart.org/content/cyberpunk-moonlight-sonata
     
-   Sounds: 
+   Sounds: https://opengameart.org/content/bombexplosion8bit
     
