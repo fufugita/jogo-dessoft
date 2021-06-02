@@ -280,7 +280,7 @@ class MobBullet(pygame.sprite.Sprite):
         
     def update(self):
 
-        #----- VELOCIDADE DA BALA EM DIREÇÃO DO MOUSE
+        #----- VELOCIDADE DA BALA EM DIREÇÃO DO PLAYER
         self.rect.centerx += self.speed * self.speedx
         self.rect.centery += self.speed * self.speedy 
 
