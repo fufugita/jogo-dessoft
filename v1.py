@@ -65,7 +65,7 @@ class Player(pygame.sprite.Sprite):
 
         #----- SET PARA COOLDOWN ATIRAR
         self.last_shot = pygame.time.get_ticks()
-        self.shoot_ticks = 300
+        self.shoot_ticks = 500
 
         #----- PLAYER PARADO POR DEFAULT
         self.speedx = 0
@@ -132,7 +132,7 @@ class Player(pygame.sprite.Sprite):
             
 class Mob(pygame.sprite.Sprite):
 
-    #----- SPRITE MOB
+    #----- SPRITE MOB   
     def __init__(self, enemy_img):
 
         #----- MOB INIMIGO
@@ -288,7 +288,7 @@ player = Player(player_img)
 all_sprites.add(player)
 
 #===== SPAWNA MOBS =====
-for i in range(1):
+for i in range(10):
     m = Mob(enemy_img)
     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
         m = Mob(enemy_img)
