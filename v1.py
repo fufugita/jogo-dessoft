@@ -21,6 +21,7 @@ BLUE = (0, 0, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))    
 pygame.display.set_caption('ARENA GAME TESTE')
 
+#===== CARREGA IMAGENS E SONS =====
 img_dir = path.join(path.dirname(__file__), 'assets', 'img')
 snd_dir = path.join(path.dirname(__file__), 'assets', 'snd')
 
