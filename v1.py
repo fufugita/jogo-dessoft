@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 from os import path
+import time
 
 pygame.init()   
 pygame.mixer.init()
@@ -21,7 +22,6 @@ BLUE = (0, 0, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))    
 pygame.display.set_caption('ARENA GAME TESTE')
 
-#===== CARREGA IMAGENS E SONS =====
 img_dir = path.join(path.dirname(__file__), 'assets', 'img')
 snd_dir = path.join(path.dirname(__file__), 'assets', 'snd')
 
@@ -39,6 +39,8 @@ enemy_img = pygame.transform.scale(enemy_img, (40, 40))
 
 pygame.mixer.music.load(path.join(snd_dir, 'musica.mp3'))
 pygame.mixer.music.set_volume(0.1)
+
+boom_sound = pygame.mixer.Sound(path.join(snd_dir, 'xpld.wav'))
 
 font = pygame.font.SysFont(None, 48)
 
@@ -202,19 +204,16 @@ class Mob(pygame.sprite.Sprite):
         self.rect.centerx = cx
         self.rect.centery = cy
 
-
-        #----- MOB ATIRAR ALEATÓRIO PARA DIREÇÕES DIFERENTES
-        atirar = random.randrange(0, 500)
+        atirar = random.randrange(0, 1000)
         if atirar == 1:
             self.shoot(angulo_radianos)
             self.shoot(angulo_radianos + 1)
-            self.shoot(angulo_radianos - 1)
 
         #if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
             #print('colidiu')
             
     def shoot(self, angulo_radianos):
-        #----- MOB ATIRAR 
+        #----- ATIRAR E COOLDOWN
         bullet = MobBullet(self.rect.centerx, self.rect.centery, angulo_radianos, fire2_img)
         all_sprites.add(bullet)
         mbullets.add(bullet)
@@ -281,7 +280,7 @@ class MobBullet(pygame.sprite.Sprite):
         
     def update(self):
 
-        #----- VELOCIDADE DA BALA EM DIREÇÃO DO PLAYER
+        #----- VELOCIDADE DA BALA EM DIREÇÃO DO MOUSE
         self.rect.centerx += self.speed * self.speedx
         self.rect.centery += self.speed * self.speedy 
 
@@ -309,7 +308,7 @@ player = Player(player_img)
 all_sprites.add(player)
 
 #===== SPAWNA MOBS =====
-for i in range(15):
+for i in range(8):
     m = Mob(enemy_img)
     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
         m = Mob(enemy_img)
@@ -362,28 +361,34 @@ def game_screen(screen):
         all_sprites.update()
 
         if state == PLAYING:
-            #----- VERIFICA COLISÃO BALA COM MOB
+            #----- VERIFICA COLISÃO BALA DO PLAYER COM MOB
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
-            for hit in hits:
-                m = Mob(enemy_img)
-                while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
+            if hits:
+                boom_sound.play()
+                time.sleep(0.01)
+                for hit in hits:
                     m = Mob(enemy_img)
-                all_sprites.add(m)
-                mobs.add(m)
+                    while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
+                        m = Mob(enemy_img)
+                    all_sprites.add(m)
+                    mobs.add(m)
 
-                #----- CONTA KILLS
-                kills += 1
+                    #----- CONTA KILLS
+                    kills += 1
 
-        #----- VERIFICA COLISÃO PLAYER COM MOB
-        hits = pygame.sprite.spritecollide(player, mobs, False)
-        if hits:
-            state = DONE
+            #----- VERIFICA COLISÃO PLAYER COM MOB
+            hits = pygame.sprite.spritecollide(player, mobs, False)
+            if hits:
+                boom_sound.play()
+                time.sleep(0.01)
+                state = DONE
 
-        hits = pygame.sprite.spritecollide(player, mbullets, False)
-        if hits:
-            state = DONE
-
-
+            #----- VERIFICA COLISÃO BALA DO MOB COM PLAYER
+            hits = pygame.sprite.spritecollide(player, mbullets, False)
+            if hits:
+                boom_sound.play()
+                time.sleep(0.01)
+                state = DONE
 
         #----- GERA SAÍDAS
         screen.fill(BLACK)

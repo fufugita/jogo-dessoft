@@ -22,7 +22,7 @@ Fontes para conteúdos utilizados:
     
    Cenário: 
 
-   Sprites: https://opengameart.org/content/space-shooter-art
+   Extra Sprites: https://opengameart.org/content/space-shooter-art, https://opengameart.org/content/soulsplode
     
    Música: https://opengameart.org/content/cyberpunk-moonlight-sonata
     
