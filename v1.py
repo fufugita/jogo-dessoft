@@ -36,7 +36,7 @@ player_img = pygame.transform.scale(player_img, (40, 40))
 enemy_img = pygame.image.load(path.join(img_dir, 'mob.png')).convert_alpha()
 enemy_img = pygame.transform.scale(enemy_img, (40, 40))
 
-pygame.mixer.music.load(path.join(snd_dir, 'tgfcoder-FrozenJam-SeamlessLoop.ogg'))
+pygame.mixer.music.load(path.join(snd_dir, 'musica.mp3'))
 pygame.mixer.music.set_volume(0.1)
 
 font = pygame.font.SysFont(None, 48)
@@ -201,16 +201,19 @@ class Mob(pygame.sprite.Sprite):
         self.rect.centerx = cx
         self.rect.centery = cy
 
-        atirar = random.randrange(0, 1000)
+
+        #----- MOB ATIRAR ALEATÓRIO PARA DIREÇÕES DIFERENTES
+        atirar = random.randrange(0, 500)
         if atirar == 1:
             self.shoot(angulo_radianos)
             self.shoot(angulo_radianos + 1)
+            self.shoot(angulo_radianos - 1)
 
         #if len(pygame.sprite.spritecollide(self, mobs, False)) > 1:
             #print('colidiu')
             
     def shoot(self, angulo_radianos):
-        #----- ATIRAR 
+        #----- MOB ATIRAR 
         bullet = MobBullet(self.rect.centerx, self.rect.centery, angulo_radianos, fire2_img)
         all_sprites.add(bullet)
         mbullets.add(bullet)
