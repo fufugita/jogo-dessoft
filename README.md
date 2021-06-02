@@ -16,13 +16,15 @@ O jogo é infinito e pode ser jogado quantas vezes quiser após a morte basta ap
 
 Fontes para conteúdos utilizados:
 
-   Player: https://pixivan.itch.io/mercenary-warrior-character
+   Player: https://opengameart.org/content/modular-ships
     
-   Mobs: https://opengameart.org/content/bosses-and-monsters-spritesheets-ars-notoria ou https://opengameart.org/content/10-basic-rpg-enemies
+   Mobs: https://opengameart.org/content/modular-ships 
     
-   Cenário: https://opengameart.org/content/tiny-16-basic ou https://opengameart.org/content/worldmapoverworld-tileset
+   Cenário: 
+
+   Sprites: https://opengameart.org/content/space-shooter-art
     
-   Música:
+   Música: https://opengameart.org/content/cyberpunk-moonlight-sonata
     
    Sounds: 
     
