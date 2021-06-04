@@ -8,6 +8,8 @@ A premissa do jogo é bem simples, você deve abater o máximo de inimigos poss�
 
 O jogo é infinito e pode ser jogado quantas vezes quiser após a morte basta aperta 'R' para recomeçar do zero, 'M' para voltar ao menu ou 'Esc' para fechar o jogo;
 
+Para executar o jogo basta apenas rodar o código do arquivo 'v1.py';
+
 
 
 
@@ -26,5 +28,5 @@ Fontes para conteúdos utilizados:
     
    Música: https://opengameart.org/content/cyberpunk-moonlight-sonata
     
-   Sounds: https://opengameart.org/content/bombexplosion8bit
+   Sounds: https://opengameart.org/content/bombexplosion8bit, https://opengameart.org/content/sound-effects-sfx030
     
