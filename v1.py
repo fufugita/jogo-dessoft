@@ -45,6 +45,7 @@ pygame.mixer.music.load(path.join(snd_dir, 'musica.mp3'))
 pygame.mixer.music.set_volume(0.1)
 
 boom_sound = pygame.mixer.Sound(path.join(snd_dir, 'xpld.wav'))
+pew_sound = pygame.mixer.Sound(path.join(snd_dir, 'FX294.mp3'))
 
 font = pygame.font.SysFont(None, 48)
 
@@ -129,6 +130,7 @@ class Player(pygame.sprite.Sprite):
             bullet = Bullet(self.rect.centerx, self.rect.centery, fire_img)
             all_sprites.add(bullet)
             bullets.add(bullet)
+            pew_sound.play()
             
 class Mob(pygame.sprite.Sprite):
 
@@ -140,6 +142,7 @@ class Mob(pygame.sprite.Sprite):
         self.image = enemy_img
         self.orig_image = enemy_img
         self.rect = self.image.get_rect()
+    
 
         #----- SPAWN ALEATÓRIO
         self.x = random.randrange(WIDTH)
@@ -191,7 +194,8 @@ class Mob(pygame.sprite.Sprite):
             self.shoot(angulo_radianos)
             self.shoot(angulo_radianos + 1)
             self.shoot(angulo_radianos - 1)
-            
+            pew_sound.play()
+
     def shoot(self, angulo_radianos):
         #----- ATIRAR E COOLDOWN
         bullet = MobBullet(self.rect.centerx, self.rect.centery, angulo_radianos, fire2_img)
@@ -356,14 +360,14 @@ def game_screen(screen):
             hits = pygame.sprite.spritecollide(player, mobs, False)
             if hits:
                 boom_sound.play()
-                time.sleep(0.01)
+                time.sleep(1)
                 state = DONE
 
             #----- VERIFICA COLISÃO BALA DO MOB COM PLAYER
             hits = pygame.sprite.spritecollide(player, mbullets, False)
             if hits:
                 boom_sound.play()
-                time.sleep(0.01)
+                time.sleep(1)
                 state = DONE
 
         #----- GERA SAÍDAS
