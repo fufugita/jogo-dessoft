@@ -22,7 +22,7 @@ Fontes para conteúdos utilizados:
     
    Mobs: https://opengameart.org/content/modular-ships 
     
-   Cenário: 
+   Cenário: https://hdqwalls.com/wallpaper/1366x768/planet-pixel-art-4k
 
    Extra Sprites: https://opengameart.org/content/space-shooter-art, https://opengameart.org/content/soulsplode
     
