@@ -96,9 +96,10 @@ def main_menu():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
-        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+        
         screen.fill(BLACK)
         screen.blit(background, (0, 0))
+        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
         pygame.draw.rect(screen, (255, 0, 0), button_1)
         pygame.draw.rect(screen, (255, 0, 0), button_2)
         pygame.display.update()
