@@ -10,8 +10,8 @@ pygame.init()
 pygame.mixer.init()
 
 #===== INICIA ASSETS =====
-WIDTH = 1800
-HEIGHT = 1000
+WIDTH = 1500
+HEIGHT = 750
 FPS = 60
 SPEED = 7
 
@@ -72,8 +72,8 @@ def main_menu():
  
         mx, my = pygame.mouse.get_pos()
  
-        button_1 = pygame.Rect(WIDTH/3, HEIGHT/3, 200, 50)
-        button_2 = pygame.Rect(50, 200, 200, 50)
+        button_1 = pygame.Rect(650, 400, 300, 75)
+        button_2 = pygame.Rect(650, 500, 300, 75)
 
         if button_1.collidepoint((mx, my)):
             if click:
