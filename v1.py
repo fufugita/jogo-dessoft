@@ -68,7 +68,7 @@ def main_menu():
     while True:
         
         screen.fill((0,0,0))
-        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+    
  
         mx, my = pygame.mouse.get_pos()
  
@@ -83,9 +83,7 @@ def main_menu():
             if click:
                 pygame.quit()
 
-        pygame.draw.rect(screen, (255, 0, 0), button_1)
-        pygame.draw.rect(screen, (255, 0, 0), button_2)
- 
+       
         click = False
 
         for event in pygame.event.get():
@@ -98,7 +96,11 @@ def main_menu():
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
                     click = True
- 
+        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+        screen.fill(BLACK)
+        screen.blit(background, (0, 0))
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
         pygame.display.update()
 
 #----- TELA DE MORTE
@@ -107,6 +109,8 @@ def morte(kills):
     while True:
         
         screen.fill((0,0,0))
+    
+        screen.blit(background, (0, 0))
         draw_text('Que pena tente novamente! Aperte ESC para sair.', font, (255, 255, 255), screen, 20, 20)
         draw_text('Pontuação: ', font, (255, 255, 255), screen, 50, 50)
         draw_text('{0}'.format(kills), font, (255, 255, 255), screen, 300, 50)
