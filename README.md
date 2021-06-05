@@ -10,6 +10,8 @@ O jogo é infinito e pode ser jogado quantas vezes quiser após a morte basta ap
 
 Para executar o jogo basta apenas rodar o código do arquivo 'v1.py';
 
+O arquivo 'highscore.txt' salva as pontuações do jogador;
+
 
 
 
