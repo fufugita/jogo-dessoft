@@ -100,8 +100,10 @@ def main_menu():
         screen.fill(BLACK)
         screen.blit(background, (0, 0))
         draw_text('main menu', font, (255, 255, 255), screen, 700, 300)
-        pygame.draw.rect(screen, (255, 0, 0), button_1)
-        pygame.draw.rect(screen, (255, 0, 0), button_2)
+        pygame.draw.rect(screen, (0, 0, 255), button_1)
+        pygame.draw.rect(screen, (0, 0, 255), button_2)
+        draw_text('JOGAR', font, (255, 255, 255), screen, 740, 420)       
+        draw_text('SAIR', font, (255, 255, 255), screen, 760, 520)
         pygame.display.update()
 
 #----- TELA DE MORTE
