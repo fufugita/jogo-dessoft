@@ -1,7 +1,5 @@
 FALTA FAZER:
 
-Telas de Menu e Morte(+Pontuação);
-
 BOSS → Maior que os mobs comuns, necessita de mais hits para morrer, mais rápido e spawna a cada 30 mobs comuns abatidos;
 
 SE POSSÍVEL:
