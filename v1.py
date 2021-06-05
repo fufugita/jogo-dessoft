@@ -4,6 +4,8 @@ import math
 from os import path
 import time
 
+from pygame.constants import KEYDOWN, K_ESCAPE, MOUSEBUTTONDOWN, QUIT
+
 pygame.init()   
 pygame.mixer.init()
 
@@ -50,6 +52,74 @@ pew_sound = pygame.mixer.Sound(path.join(snd_dir, 'FX294.mp3'))
 font = pygame.font.SysFont(None, 48)
 
 #===== ESTRUTURA DE DADOS =====
+
+#------ TEXTO
+def draw_text(text, font, color, surface, x, y):
+    textobj = font.render(text, 1, color)
+    textrect = textobj.get_rect()
+    textrect.topleft = (x, y)
+    surface.blit(textobj, textrect)
+
+
+#----- MAIN MENU
+click = False
+def main_menu():
+   
+    while True:
+        
+        screen.fill((0,0,0))
+        draw_text('main menu', font, (255, 255, 255), screen, 20, 20)
+ 
+        mx, my = pygame.mouse.get_pos()
+ 
+        button_1 = pygame.Rect(50, 100, 200, 50)
+        button_2 = pygame.Rect(50, 200, 200, 50)
+
+        if button_1.collidepoint((mx, my)):
+            if click:
+                game_screen(screen)
+
+        if button_2.collidepoint((mx, my)):
+            if click:
+                pygame.quit()
+
+        pygame.draw.rect(screen, (255, 0, 0), button_1)
+        pygame.draw.rect(screen, (255, 0, 0), button_2)
+ 
+        click = False
+
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+
+            if event.type == MOUSEBUTTONDOWN:
+                if event.button == 1:
+                    click = True
+ 
+        pygame.display.update()
+
+#----- TELA DE MORTE
+def morte(kills):
+    
+    while True:
+        
+        screen.fill((0,0,0))
+        draw_text('Que pena tente novamente! Aperte ESC para sair.', font, (255, 255, 255), screen, 20, 20)
+        draw_text('Pontuação: ', font, (255, 255, 255), screen, 50, 50)
+        draw_text('{0}'.format(kills), font, (255, 255, 255), screen, 300, 50)
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                    pygame.quit()
+            if event.type == KEYDOWN:
+                if event.key == K_ESCAPE:
+                    pygame.quit()
+                    
+        pygame.display.update()
+
+#----- Player
 class Player(pygame.sprite.Sprite):
 
     #----- SPRITE DO PLAYER
@@ -310,7 +380,6 @@ def game_screen(screen):
 
     DONE = 0
     PLAYING = 1
-    EXPLODING = 2
     state = PLAYING
     kills = 0
 
@@ -324,13 +393,13 @@ def game_screen(screen):
 
             #----- APERTOU QUIT NA ABA
             if event.type == pygame.QUIT:
-             state = DONE
+                pygame.quit()
 
             if event.type == pygame.KEYDOWN:
 
                 #----- APERTOU ESC -> FECHA O JOGO
                 if event.key == pygame.K_ESCAPE:
-                    state = DONE
+                    pygame.quit()
 
             #APERTOU O BOTÃO DO MOUSE -> ATIRAR 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -362,6 +431,10 @@ def game_screen(screen):
                 boom_sound.play()
                 time.sleep(1)
                 state = DONE
+                skills = str(kills)
+                with open('highscore.txt', 'a') as arquivo:
+                    arquivo.write('{0}\n'.format(skills))
+                morte(kills)
 
             #----- VERIFICA COLISÃO BALA DO MOB COM PLAYER
             hits = pygame.sprite.spritecollide(player, mbullets, False)
@@ -369,6 +442,10 @@ def game_screen(screen):
                 boom_sound.play()
                 time.sleep(1)
                 state = DONE
+                skills = str(kills)
+                with open('highscore.txt', 'a') as arquivo:
+                    arquivo.write('{0}\n'.format(skills))
+                morte(kills)
 
         #----- GERA SAÍDAS
         screen.fill(BLACK)
@@ -388,6 +465,6 @@ def game_screen(screen):
         pygame.display.flip()
 
 try:
-    game_screen(screen)
+    main_menu()
 finally:
     pygame.quit()
