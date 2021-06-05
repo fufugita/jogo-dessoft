@@ -72,7 +72,7 @@ def main_menu():
  
         mx, my = pygame.mouse.get_pos()
  
-        button_1 = pygame.Rect(50, 100, 200, 50)
+        button_1 = pygame.Rect(WIDTH/3, HEIGHT/3, 200, 50)
         button_2 = pygame.Rect(50, 200, 200, 50)
 
         if button_1.collidepoint((mx, my)):
@@ -112,7 +112,7 @@ def morte(kills):
         screen.fill((0,0,0))
     
         screen.blit(background, (0, 0))
-        draw_text('Que pena tente novamente! Aperte ESC para sair.', font, (255, 255, 255), screen, 20, 20)
+        draw_text('Que pena tente novamente! Aperte ESC para sair.', font, (255, 255, 255), screen,20,  20)
         draw_text('Pontuação: ', font, (255, 255, 255), screen, 50, 50)
         draw_text('{0}'.format(kills), font, (255, 255, 255), screen, 300, 50)
         for event in pygame.event.get():
