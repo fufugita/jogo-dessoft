@@ -37,11 +37,17 @@ fire_img = pygame.transform.scale(fire_img, (25, 25))
 fire2_img = pygame.image.load(path.join(img_dir, 'fire2.png')).convert_alpha()
 fire2_img = pygame.transform.scale(fire2_img, (25, 25))
 
+fireboss_img = pygame.image.load(path.join(img_dir, 'fire2.png')).convert_alpha()
+fireboss_img = pygame.transform.scale(fire2_img, (50, 50))
+
 player_img = pygame.image.load(path.join(img_dir, 'player.png')).convert_alpha()
 player_img = pygame.transform.scale(player_img, (40, 40))
 
 enemy_img = pygame.image.load(path.join(img_dir, 'mob.png')).convert_alpha()
 enemy_img = pygame.transform.scale(enemy_img, (40, 40))
+
+boss_img = pygame.image.load(path.join(img_dir, 'boss.png')).convert_alpha()
+boss_img = pygame.transform.scale(boss_img, (120, 120))
 
 pygame.mixer.music.load(path.join(snd_dir, 'musica.mp3'))
 pygame.mixer.music.set_volume(0.1)
@@ -279,6 +285,76 @@ class Mob(pygame.sprite.Sprite):
         all_sprites.add(bullet)
         mbullets.add(bullet)
         
+class Boss(pygame.sprite.Sprite):
+
+    #----- SPRITE BOSS   
+    def __init__(self, enemy_img):
+
+        #----- BOSS INIMIGO
+        pygame.sprite.Sprite.__init__(self)
+        self.image = enemy_img
+        self.orig_image = enemy_img
+        self.rect = self.image.get_rect()
+    
+
+        #----- SPAWN ALEATÓRIO
+        self.x = random.randrange(WIDTH)
+        self.y = random.randrange(HEIGHT)
+        self.rect.center = (self.x, self.y)
+
+        #----- SET PARA COOLDOWN ATIRAR
+        self.last_shot = pygame.time.get_ticks()
+        self.shoot_ticks = 200
+
+        #----- VELOCIDADE
+        self.speedx = 3+SPEED
+        self.speedy = 3+SPEED
+        
+    #----- ATUALIZA POSIÇÃO DO MOB
+    def update(self):
+        
+        #----- MOVE O MOB EM DIREÇÃO DO PLAYER
+        if self.x < player.rect.centerx:
+            self.x += self.speedx/3
+            self.rect.center = (self.x, self.y)   
+        elif self.x > player.rect.centerx:
+            self.x -= self.speedx/3
+            self.rect.center = (self.x, self.y)  
+        if self.y < player.rect.centery:
+            self.y += self.speedy/3
+            self.rect.center = (self.x, self.y)  
+        elif self.y > player.rect.centery:
+            self.y -= self.speedy/3
+            self.rect.center = (self.x, self.y) 
+
+        #----- OLHA NA DIREÇÃO DO PLAYER
+        p_x = player.rect.centerx
+        p_y = player.rect.centery
+        cx = self.rect.centerx
+        cy = self.rect.centery
+        direcao_x = p_x - cx
+        direcao_y = p_y - cy
+        angulo_radianos = math.atan2(direcao_y, direcao_x)
+        angulo_graus = math.degrees(angulo_radianos)
+        angulo_rotacao = -(angulo_graus + 90)
+        self.image = pygame.transform.rotate(self.orig_image, angulo_rotacao)
+        self.rect = self.image.get_rect()
+        self.rect.centerx = cx
+        self.rect.centery = cy
+
+        atirar = random.randrange(0, 1000)
+        if atirar == 730:
+            self.shoot(angulo_radianos)
+            self.shoot(angulo_radianos + 1)
+            self.shoot(angulo_radianos - 1)
+            pew_sound.play()
+
+    def shoot(self, angulo_radianos):
+        #----- ATIRAR E COOLDOWN
+        bulletboss = MobBullet(self.rect.centerx, self.rect.centery, angulo_radianos, fireboss_img)
+        all_sprites.add(bulletboss)
+        mbullets.add(bulletboss)
+        
 
 class Bullet(pygame.sprite.Sprite):
 
@@ -359,6 +435,8 @@ class MobBullet(pygame.sprite.Sprite):
 #===== CRIANDO MOBS =====
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
+bosses = pygame.sprite.Group()
+
 
 #===== CRIANDO TIROS =====
 bullets = pygame.sprite.Group()
@@ -368,13 +446,19 @@ mbullets = pygame.sprite.Group()
 player = Player(player_img)
 all_sprites.add(player)
 
+##criando o boss
+boss = Boss(boss_img)
+bosses.add(boss)
+
 #===== SPAWNA MOBS =====
 for i in range(10):
     m = Mob(enemy_img)
+        
     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
         m = Mob(enemy_img)
     all_sprites.add(m)
     mobs.add(m)
+    
 
 #===== TELA DO JOGO =====
 def game_screen(screen):
@@ -389,6 +473,7 @@ def game_screen(screen):
     PLAYING = 1
     state = PLAYING
     kills = 0
+    
 
     #===== LOOP PRINCIPAL DO JOGO =====
     pygame.mixer.music.play(loops=-1)
@@ -419,10 +504,14 @@ def game_screen(screen):
         if state == PLAYING:
             #----- VERIFICA COLISÃO BALA DO PLAYER COM MOB
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
+            hitsc = pygame.sprite.groupcollide(bosses,bullets,True,True)
             if hits:
                 boom_sound.play()
                 time.sleep(0.01)
+                contador = 0
                 for hit in hits:
+                    contador +=1
+                    
                     m = Mob(enemy_img)
                     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
                         m = Mob(enemy_img)
@@ -431,10 +520,20 @@ def game_screen(screen):
 
                     #----- CONTA KILLS
                     kills += 1
-
+            if hitsc:
+                boom_sound.play()
+                time.sleep(0.01)
+                contador = 0
+                for hit in hitsc:
+                    contador +=1
+                    print(contador)
+                    if contador==5:
+                        boss.kill()
+                    kills +=1
             #----- VERIFICA COLISÃO PLAYER COM MOB
             hits = pygame.sprite.spritecollide(player, mobs, False)
-            if hits:
+            hits2 = pygame.sprite.spritecollide(player,bosses,False)
+            if hits or hits2:
                 boom_sound.play()
                 time.sleep(1)
                 state = DONE
@@ -445,6 +544,7 @@ def game_screen(screen):
 
             #----- VERIFICA COLISÃO BALA DO MOB COM PLAYER
             hits = pygame.sprite.spritecollide(player, mbullets, False)
+           
             if hits:
                 boom_sound.play()
                 time.sleep(1)
@@ -453,6 +553,15 @@ def game_screen(screen):
                 with open('highscore.txt', 'a') as arquivo:
                     arquivo.write('{0}\n'.format(skills))
                 morte(kills)
+            
+            ##spawna o boss quando a quantidade de kills for 5
+            if kills == 5:
+
+                ##retira todos os mobs 
+                
+
+                ##spawna o boss
+                all_sprites.add(boss)
 
         #----- GERA SAÍDAS
         screen.fill(BLACK)
@@ -461,7 +570,7 @@ def game_screen(screen):
         #----- DESENHA SPRITES
         all_sprites.draw(screen)
 
-        #----- CONTADOR DE KILLS
+        #----- CONTADOR DE 'KILLS'
         text_surface = font.render("{:08d}".format(kills), True, BLUE)
         text_rect = text_surface.get_rect()
         text_rect.midtop = (WIDTH / 2,  10)
