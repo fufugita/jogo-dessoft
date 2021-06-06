@@ -307,8 +307,8 @@ class Boss(pygame.sprite.Sprite):
     
 
         #----- SPAWN ALEATÓRIO
-        self.x = random.randrange(player.rect.centerx + 100, WIDTH + 50)
-        self.y = random.randrange(player.rect.centery + 100, WIDTH + 50)
+        self.x = random.randrange(player.rect.centerx + 100, WIDTH+100)
+        self.y = random.randrange(player.rect.centery + 100, WIDTH+100)
         self.rect.center = (self.x, self.y)
 
         #----- VELOCIDADE
@@ -444,7 +444,6 @@ class MobBullet(pygame.sprite.Sprite):
 #===== CRIANDO MOBS  =====
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
-fake = pygame.sprite.Group()
 
 #===== CRIANDO TIROS =====
 bullets = pygame.sprite.Group()
@@ -457,7 +456,6 @@ all_sprites.add(player)
 #===== CRIANDO O BOSS =====
 bosses = pygame.sprite.Group()
 boss = Boss(boss_img)
-bosses.add(boss)
 
 #===== SPAWNA MOBS =====
 for i in range(4):
@@ -515,7 +513,6 @@ def game_screen(screen):
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
             if hits:
                 boom_sound.play()
-                time.sleep(0.1)
                 for hit in hits:
                     m = Mob(enemy_img)
                     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
@@ -530,7 +527,7 @@ def game_screen(screen):
             hits = pygame.sprite.groupcollide(bosses, bullets, True, True)
             if hits:
                 boom_sound.play()
-                time.sleep(0.1)
+                
                 bosses.add(boss)
 
                 #----- CONTA KILLS
@@ -570,17 +567,21 @@ def game_screen(screen):
                 morte(kills)
 
             #----- SPAWNA O BOSS A CADA 5 KILLS
-            if kills != 0 and kills % 10 == 0 and ((boss.rect.centerx - player.rect.centerx)**2 + (boss.rect.centery - player.rect.centery)**2)**0.5 > 10:
-               
+            boss_VIVO = False
+            if kills != 0 and kills % 10 == 0 and boss_VIVO == False:
                 #----- SPAWNA
-                add = all_sprites.add(boss) 
-            
+                all_sprites.add(boss)
+                bosses.add(boss)
+                boss_VIVO = True
+            boss_VIVO = False
+ 
         #----- GERA SAÍDAS
         screen.fill(BLACK)
         screen.blit(background, (0, 0))
 
         #----- DESENHA SPRITES
         all_sprites.draw(screen)
+
 
         #----- CONTADOR DE 'KILLS'
         text_surface = font.render("{:08d}".format(kills), True, BLUE)
