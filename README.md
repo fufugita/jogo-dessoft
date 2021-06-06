@@ -6,13 +6,12 @@ Jogo estilo arena inspirado no jogo 'Akane' desenvolvido pela empresa 'LUDIC Stu
 
 A premissa do jogo é bem simples, você deve abater o máximo de inimigos possíveis com apenas uma vida, e cada 30 inimigos abatido um "boss" aparece. A principal sacada é que você e seus inimigos morrem em apenas em um hit, com exceção do "boss" que morre depois de 'X' hits;
 
-O jogo é infinito e pode ser jogado quantas vezes quiser após a morte basta aperta 'R' para recomeçar do zero, 'M' para voltar ao menu ou 'Esc' para fechar o jogo;
-
+O jogo é infinito e pode ser jogado quantas vezes quiser após a morte basta aperta 'ESC' para sair do jogo e reiniciar o código;
 Para executar o jogo basta apenas rodar o código do arquivo 'v1.py';
 
 O arquivo 'highscore.txt' salva as pontuações do jogador;
 
-
+ATENÇÃO O BOSS É BEM DIFICIL!
 
 
 
