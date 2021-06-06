@@ -3,6 +3,7 @@ import random
 import math
 from os import path
 import time
+import sys
 
 from pygame.constants import KEYDOWN, K_ESCAPE, MOUSEBUTTONDOWN, QUIT
 
@@ -10,9 +11,9 @@ pygame.init()
 pygame.mixer.init()
 
 #===== INICIA ASSETS =====
-WIDTH = 1500
+WIDTH = 1400
 HEIGHT = 750
-FPS = 60
+FPS = 45
 SPEED = 7
 
 WHITE = (255, 255, 255)
@@ -32,13 +33,13 @@ background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
 
 fire_img = pygame.image.load(path.join(img_dir, 'fire.png')).convert_alpha()
-fire_img = pygame.transform.scale(fire_img, (25, 25))
+fire_img = pygame.transform.scale(fire_img, (20, 20))
 
 fire2_img = pygame.image.load(path.join(img_dir, 'fire2.png')).convert_alpha()
-fire2_img = pygame.transform.scale(fire2_img, (25, 25))
+fire2_img = pygame.transform.scale(fire2_img, (20, 20))
 
 fireboss_img = pygame.image.load(path.join(img_dir, 'fire2.png')).convert_alpha()
-fireboss_img = pygame.transform.scale(fire2_img, (50, 50))
+fireboss_img = pygame.transform.scale(fire2_img, (20, 20))
 
 player_img = pygame.image.load(path.join(img_dir, 'player.png')).convert_alpha()
 player_img = pygame.transform.scale(player_img, (40, 40))
@@ -54,6 +55,8 @@ pygame.mixer.music.set_volume(0.1)
 
 boom_sound = pygame.mixer.Sound(path.join(snd_dir, 'xpld.wav'))
 pew_sound = pygame.mixer.Sound(path.join(snd_dir, 'FX294.mp3'))
+pew_sound.set_volume(0.1)
+boom_sound.set_volume(0.1)
 
 font = pygame.font.SysFont(None, 48)
 
@@ -70,16 +73,15 @@ def draw_text(text, font, color, surface, x, y):
 #----- MAIN MENU
 click = False
 def main_menu():
-   
+    click = False
     while True:
-        
         screen.fill((0,0,0))
     
  
         mx, my = pygame.mouse.get_pos()
  
-        button_1 = pygame.Rect(650, 400, 300, 75)
-        button_2 = pygame.Rect(650, 500, 300, 75)
+        button_1 = pygame.Rect(0, 400, WIDTH, 75)
+        button_2 = pygame.Rect(0, 500, WIDTH, 75)
 
         if button_1.collidepoint((mx, my)):
             if click:
@@ -88,6 +90,7 @@ def main_menu():
         if button_2.collidepoint((mx, my)):
             if click:
                 pygame.quit()
+                sys.exit()
 
        
         click = False
@@ -95,9 +98,11 @@ def main_menu():
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
+                sys.exit()
             if event.type == KEYDOWN:
                 if event.key == K_ESCAPE:
                     pygame.quit()
+                    sys.exit()
 
             if event.type == MOUSEBUTTONDOWN:
                 if event.button == 1:
@@ -105,11 +110,11 @@ def main_menu():
         
         screen.fill(BLACK)
         screen.blit(background, (0, 0))
-        draw_text('main menu', font, (255, 255, 255), screen, 700, 300)
+        draw_text('JOGUINHO', font, (255, 255, 255), screen, 600, 300)
         pygame.draw.rect(screen, (0, 0, 255), button_1)
         pygame.draw.rect(screen, (0, 0, 255), button_2)
-        draw_text('JOGAR', font, (255, 255, 255), screen, 740, 420)       
-        draw_text('SAIR', font, (255, 255, 255), screen, 760, 520)
+        draw_text('JOGAR', font, (255, 255, 255), screen, 625, 420)       
+        draw_text('SAIR', font, (255, 255, 255), screen, 640, 520)
         pygame.display.update()
 
 #----- TELA DE MORTE
@@ -120,9 +125,9 @@ def morte(kills):
         screen.fill((0,0,0))
     
         screen.blit(background, (0, 0))
-        draw_text('Que pena tente novamente! Aperte ESC para sair.', font, (255, 255, 255), screen,20,  20)
-        draw_text('Pontuação: ', font, (255, 255, 255), screen, 50, 50)
-        draw_text('{0}'.format(kills), font, (255, 255, 255), screen, 300, 50)
+        draw_text('Que pena tente novamente! Aperte ESC para sair.', font, (255, 255, 255), screen, 270,  200)
+        draw_text('Pontuação: ', font, (255, 255, 255), screen, 600, 300)
+        draw_text('{0}'.format(kills), font, (255, 255, 255), screen, 850, 300)
         for event in pygame.event.get():
             if event.type == QUIT:
                     pygame.quit()
@@ -214,7 +219,8 @@ class Player(pygame.sprite.Sprite):
             all_sprites.add(bullet)
             bullets.add(bullet)
             pew_sound.play()
-            
+
+
 class Mob(pygame.sprite.Sprite):
 
     #----- SPRITE MOB   
@@ -228,8 +234,8 @@ class Mob(pygame.sprite.Sprite):
     
 
         #----- SPAWN ALEATÓRIO
-        self.x = random.randrange(WIDTH)
-        self.y = random.randrange(HEIGHT)
+        self.x = random.randrange(player.rect.centerx + 100, WIDTH+100)
+        self.y = random.randrange(player.rect.centery + 100, WIDTH+100)
         self.rect.center = (self.x, self.y)
 
         #----- SET PARA COOLDOWN ATIRAR
@@ -272,11 +278,14 @@ class Mob(pygame.sprite.Sprite):
         self.rect.centerx = cx
         self.rect.centery = cy
 
-        atirar = random.randrange(0, 1000)
-        if atirar == 730:
+        atirar = random.randrange(0, 800)
+        if atirar == 5:
             self.shoot(angulo_radianos)
             self.shoot(angulo_radianos + 1)
             self.shoot(angulo_radianos - 1)
+            self.shoot(angulo_radianos + 2)
+            self.shoot(angulo_radianos - 2)
+            self.shoot(angulo_radianos + 3)
             pew_sound.play()
 
     def shoot(self, angulo_radianos):
@@ -298,17 +307,13 @@ class Boss(pygame.sprite.Sprite):
     
 
         #----- SPAWN ALEATÓRIO
-        self.x = random.randrange(WIDTH)
-        self.y = random.randrange(HEIGHT)
+        self.x = random.randrange(player.rect.centerx + 100, WIDTH + 50)
+        self.y = random.randrange(player.rect.centery + 100, WIDTH + 50)
         self.rect.center = (self.x, self.y)
 
-        #----- SET PARA COOLDOWN ATIRAR
-        self.last_shot = pygame.time.get_ticks()
-        self.shoot_ticks = 200
-
         #----- VELOCIDADE
-        self.speedx = 3+SPEED
-        self.speedy = 3+SPEED
+        self.speedx = SPEED 
+        self.speedy = SPEED 
         
     #----- ATUALIZA POSIÇÃO DO MOB
     def update(self):
@@ -342,15 +347,19 @@ class Boss(pygame.sprite.Sprite):
         self.rect.centerx = cx
         self.rect.centery = cy
 
-        atirar = random.randrange(0, 1000)
-        if atirar == 730:
+        atirar = 0
+        while atirar % 2 == 0:
             self.shoot(angulo_radianos)
             self.shoot(angulo_radianos + 1)
             self.shoot(angulo_radianos - 1)
+            self.shoot(angulo_radianos + 2)
+            self.shoot(angulo_radianos - 2)
+            self.shoot(angulo_radianos + 3)
             pew_sound.play()
+            atirar += 1
 
     def shoot(self, angulo_radianos):
-        #----- ATIRAR E COOLDOWN
+        #----- ATIRAR
         bulletboss = MobBullet(self.rect.centerx, self.rect.centery, angulo_radianos, fireboss_img)
         all_sprites.add(bulletboss)
         mbullets.add(bulletboss)
@@ -422,21 +431,20 @@ class MobBullet(pygame.sprite.Sprite):
         self.rect.centery += self.speed * self.speedy 
 
         #----- FAZER A BALA DESAPARECER
-        if self.rect.bottom < 0:
+        '''if self.rect.bottom < 0:
             self.kill()
         if self.rect.top > HEIGHT:
             self.kill()
         if self.rect.right > WIDTH:
             self.kill()
         if self.rect.left < 0:
-            self.kill ()
+            self.kill ()'''
 
 
-#===== CRIANDO MOBS =====
+#===== CRIANDO MOBS  =====
 all_sprites = pygame.sprite.Group()
 mobs = pygame.sprite.Group()
-bosses = pygame.sprite.Group()
-
+fake = pygame.sprite.Group()
 
 #===== CRIANDO TIROS =====
 bullets = pygame.sprite.Group()
@@ -446,18 +454,19 @@ mbullets = pygame.sprite.Group()
 player = Player(player_img)
 all_sprites.add(player)
 
-##criando o boss
+#===== CRIANDO O BOSS =====
+bosses = pygame.sprite.Group()
 boss = Boss(boss_img)
 bosses.add(boss)
 
 #===== SPAWNA MOBS =====
-for i in range(10):
-    m = Mob(enemy_img)
-        
+for i in range(4):
+    m = Mob(enemy_img)   
     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
-        m = Mob(enemy_img)
+        m = Mob(enemy_img) 
     all_sprites.add(m)
     mobs.add(m)
+    
     
 
 #===== TELA DO JOGO =====
@@ -504,14 +513,10 @@ def game_screen(screen):
         if state == PLAYING:
             #----- VERIFICA COLISÃO BALA DO PLAYER COM MOB
             hits = pygame.sprite.groupcollide(mobs, bullets, True, True)
-            hitsc = pygame.sprite.groupcollide(bosses,bullets,True,True)
             if hits:
                 boom_sound.play()
-                time.sleep(0.01)
-                contador = 0
+                time.sleep(0.1)
                 for hit in hits:
-                    contador +=1
-                    
                     m = Mob(enemy_img)
                     while ((m.rect.centerx - player.rect.centerx)**2 + (m.rect.centery - player.rect.centery)**2)**0.5 < 500:
                         m = Mob(enemy_img)
@@ -520,20 +525,31 @@ def game_screen(screen):
 
                     #----- CONTA KILLS
                     kills += 1
-            if hitsc:
+
+            #----- VERIFICA COLISÃO BALA DO PLAYER COM BOSS     
+            hits = pygame.sprite.groupcollide(bosses, bullets, True, True)
+            if hits:
                 boom_sound.play()
-                time.sleep(0.01)
-                contador = 0
-                for hit in hitsc:
-                    contador +=1
-                    print(contador)
-                    if contador==5:
-                        boss.kill()
-                    kills +=1
-            #----- VERIFICA COLISÃO PLAYER COM MOB
+                time.sleep(0.1)
+                bosses.add(boss)
+
+                #----- CONTA KILLS
+                kills += 1
+
+            #----- VERIFICA COLISÃO PLAYER COM MOB 
             hits = pygame.sprite.spritecollide(player, mobs, False)
-            hits2 = pygame.sprite.spritecollide(player,bosses,False)
-            if hits or hits2:
+            if hits:
+                boom_sound.play()
+                time.sleep(1)
+                state = DONE
+                skills = str(kills)
+                with open('highscore.txt', 'a') as arquivo:
+                    arquivo.write('{0}\n'.format(skills))
+                morte(kills)
+
+            #----- VERIFICA COLISÃO PLAYER COM BOSS
+            hits = pygame.sprite.spritecollide(player, bosses, False)
+            if hits:
                 boom_sound.play()
                 time.sleep(1)
                 state = DONE
@@ -544,7 +560,6 @@ def game_screen(screen):
 
             #----- VERIFICA COLISÃO BALA DO MOB COM PLAYER
             hits = pygame.sprite.spritecollide(player, mbullets, False)
-           
             if hits:
                 boom_sound.play()
                 time.sleep(1)
@@ -553,16 +568,13 @@ def game_screen(screen):
                 with open('highscore.txt', 'a') as arquivo:
                     arquivo.write('{0}\n'.format(skills))
                 morte(kills)
+
+            #----- SPAWNA O BOSS A CADA 5 KILLS
+            if kills != 0 and kills % 10 == 0 and ((boss.rect.centerx - player.rect.centerx)**2 + (boss.rect.centery - player.rect.centery)**2)**0.5 > 10:
+               
+                #----- SPAWNA
+                add = all_sprites.add(boss) 
             
-            ##spawna o boss quando a quantidade de kills for 5
-            if kills == 5:
-
-                ##retira todos os mobs 
-                
-
-                ##spawna o boss
-                all_sprites.add(boss)
-
         #----- GERA SAÍDAS
         screen.fill(BLACK)
         screen.blit(background, (0, 0))
