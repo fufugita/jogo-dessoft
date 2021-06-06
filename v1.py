@@ -234,8 +234,8 @@ class Mob(pygame.sprite.Sprite):
     
 
         #----- SPAWN ALEATÓRIO
-        self.x = random.randrange(player.rect.centerx + 100, WIDTH+100)
-        self.y = random.randrange(player.rect.centery + 100, WIDTH+100)
+        self.x = random.randrange(WIDTH - self.rect.width + 500)
+        self.y = random.randrange(HEIGHT - self.rect.height + 500)
         self.rect.center = (self.x, self.y)
 
         #----- SET PARA COOLDOWN ATIRAR
@@ -307,8 +307,8 @@ class Boss(pygame.sprite.Sprite):
     
 
         #----- SPAWN ALEATÓRIO
-        self.x = random.randrange(player.rect.centerx + 100, WIDTH+100)
-        self.y = random.randrange(player.rect.centery + 100, WIDTH+100)
+        self.x = random.randrange(WIDTH - self.rect.width + 500)
+        self.y = random.randrange(HEIGHT - self.rect.height + 500)
         self.rect.center = (self.x, self.y)
 
         #----- VELOCIDADE
@@ -527,8 +527,6 @@ def game_screen(screen):
             hits = pygame.sprite.groupcollide(bosses, bullets, True, True)
             if hits:
                 boom_sound.play()
-                
-                bosses.add(boss)
 
                 #----- CONTA KILLS
                 kills += 1
@@ -540,6 +538,7 @@ def game_screen(screen):
                 time.sleep(1)
                 state = DONE
                 skills = str(kills)
+                print('colidiu')
                 with open('highscore.txt', 'a') as arquivo:
                     arquivo.write('{0}\n'.format(skills))
                 morte(kills)
@@ -551,6 +550,7 @@ def game_screen(screen):
                 time.sleep(1)
                 state = DONE
                 skills = str(kills)
+                print('colidiu boss')
                 with open('highscore.txt', 'a') as arquivo:
                     arquivo.write('{0}\n'.format(skills))
                 morte(kills)
@@ -562,18 +562,19 @@ def game_screen(screen):
                 time.sleep(1)
                 state = DONE
                 skills = str(kills)
+                print('tiro')
                 with open('highscore.txt', 'a') as arquivo:
                     arquivo.write('{0}\n'.format(skills))
                 morte(kills)
 
             #----- SPAWNA O BOSS A CADA 5 KILLS
-            boss_VIVO = False
-            if kills != 0 and kills % 10 == 0 and boss_VIVO == False:
+
+            if kills != 0 and kills % 10 == 0:
+        
                 #----- SPAWNA
                 all_sprites.add(boss)
                 bosses.add(boss)
-                boss_VIVO = True
-            boss_VIVO = False
+    
  
         #----- GERA SAÍDAS
         screen.fill(BLACK)
