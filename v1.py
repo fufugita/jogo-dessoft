@@ -110,7 +110,7 @@ def main_menu():
         
         screen.fill(BLACK)
         screen.blit(background, (0, 0))
-        draw_text('DODGE THOSE SHIPS', font, (255, 255, 255), screen, 600, 300)
+        draw_text('DODGE THOSE SHIPS', font, (255, 255, 255), screen, 500, 300)
         pygame.draw.rect(screen, (0, 0, 255), button_1)
         pygame.draw.rect(screen, (0, 0, 255), button_2)
         draw_text('JOGAR', font, (255, 255, 255), screen, 625, 420)       
