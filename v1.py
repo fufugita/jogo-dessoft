@@ -307,8 +307,8 @@ class Boss(pygame.sprite.Sprite):
     
 
         #----- SPAWN ALEATÓRIO
-        self.x = random.randrange(WIDTH - self.rect.width + 500)
-        self.y = random.randrange(HEIGHT - self.rect.height + 500)
+        self.x = random.randrange(player.rect.centerx + 300, WIDTH)
+        self.y = random.randrange(player.rect.centery + 300,  HEIGHT + 400)
         self.rect.center = (self.x, self.y)
 
         #----- VELOCIDADE
