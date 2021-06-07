@@ -13,6 +13,7 @@ O arquivo 'highscore.txt' salva as pontuações do jogador;
 
 ATENÇÃO O BOSS É BEM DIFICIL!
 
+Vídeo do jogo funcionando: https://www.youtube.com/watch?v=5JbXw6ZJDHY
 
 Fontes para conteúdos utilizados:
 
