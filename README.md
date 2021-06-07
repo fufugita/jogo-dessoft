@@ -2,6 +2,8 @@
 
 Integrantes: Guilherme Fugita, Andrei Melo, Caio Yugo Komatsu
 
+DODGE THOSE SHIPS
+
 A premissa do jogo é bem simples, você deve abater o máximo de inimigos possíveis com apenas uma vida, e cada 10 inimigos abatido um "boss" aparece. A principal sacada é que você e seus inimigos morrem em apenas em um hit;
 
 Para executar o jogo basta apenas rodar o código do arquivo 'v1.py';
