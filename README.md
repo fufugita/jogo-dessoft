@@ -1,6 +1,6 @@
 # jogo-dessoft
 
-Integrantes: Guilherme Fugita, Andrei Melo de Paiva, Caio Yugo Komatsu
+Integrantes: Guilherme Fugita, Andrei Melo, Caio Yugo Komatsu
 
 A premissa do jogo é bem simples, você deve abater o máximo de inimigos possíveis com apenas uma vida, e cada 10 inimigos abatido um "boss" aparece. A principal sacada é que você e seus inimigos morrem em apenas em um hit;
 
