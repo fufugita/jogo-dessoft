@@ -418,7 +418,7 @@ class MobBullet(pygame.sprite.Sprite):
         self.rect.centerx = centerx
 
         #----- VELOCIDADE DEFAULT
-        self.speed = 15
+        self.speed = SPEED
         
         #----- ATIRA 
         self.speedx = math.cos(angulo)
@@ -429,17 +429,6 @@ class MobBullet(pygame.sprite.Sprite):
         #----- VELOCIDADE DA BALA EM DIREÇÃO DO MOUSE
         self.rect.centerx += self.speed * self.speedx
         self.rect.centery += self.speed * self.speedy 
-
-        #----- FAZER A BALA DESAPARECER
-        '''if self.rect.bottom < 0:
-            self.kill()
-        if self.rect.top > HEIGHT:
-            self.kill()
-        if self.rect.right > WIDTH:
-            self.kill()
-        if self.rect.left < 0:
-            self.kill ()'''
-
 
 #===== CRIANDO MOBS  =====
 all_sprites = pygame.sprite.Group()
@@ -476,6 +465,7 @@ def game_screen(screen):
     #LOOP DO JOGO
     pygame.mixer.music.play(loops=-1)
 
+    #CONDIÇÕES DO JOGO
     DONE = 0
     PLAYING = 1
     state = PLAYING
