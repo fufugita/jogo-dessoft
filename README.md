@@ -2,7 +2,7 @@
 
 Integrantes: Guilherme Fugita, Andrei Melo, Caio Yugo Komatsu
 
-DODGE THOSE SHIPS
+## DODGE THOSE SHIPS
 
 A premissa do jogo é bem simples, você deve abater o máximo de inimigos possíveis com apenas uma vida, e cada 10 inimigos abatido um "boss" aparece. A principal sacada é que você e seus inimigos morrem em apenas em um hit;
 
@@ -16,16 +16,10 @@ ATENÇÃO O BOSS É BEM DIFICIL!
 Vídeo do jogo funcionando: https://www.youtube.com/watch?v=5JbXw6ZJDHY
 
 Fontes para conteúdos utilizados:
-
-   Player: https://opengameart.org/content/modular-ships
-    
-   Mobs: https://opengameart.org/content/modular-ships 
-    
-   Cenário: https://hdqwalls.com/wallpaper/1366x768/planet-pixel-art-4k
-
-   Extra Sprites: https://opengameart.org/content/space-shooter-art, https://opengameart.org/content/soulsplode
-    
-   Música: https://opengameart.org/content/cyberpunk-moonlight-sonata
-    
-   Sounds: https://opengameart.org/content/bombexplosion8bit, https://opengameart.org/content/sound-effects-sfx030
+- Player: https://opengameart.org/content/modular-ships  
+- Mobs: https://opengameart.org/content/modular-ships 
+- Cenário: https://hdqwalls.com/wallpaper/1366x768/planet-pixel-art-4k
+- Extra Sprites: https://opengameart.org/content/space-shooter-art, https://opengameart.org/content/soulsplode
+- Música: https://opengameart.org/content/cyberpunk-moonlight-sonata
+- Sounds: https://opengameart.org/content/bombexplosion8bit, https://opengameart.org/content/sound-effects-sfx030
     
